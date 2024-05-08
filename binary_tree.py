@@ -7,7 +7,7 @@ class BinarySearchTree(ConcurrentTreeBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._root = None
-        self._size = 1
+        self._size = 0
 
     def size(self):
         return self._size
