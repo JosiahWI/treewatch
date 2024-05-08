@@ -1,83 +1,88 @@
-from concurrent_tree_base import ConcurrentTreeBase
+from concurrent_tree_base import ConcurrentTreeBase, Node
 
 class BinarySearchTree(ConcurrentTreeBase):
 
-    def __init__(self, value, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.left = None
-        self.right = None
-        self.value = value
+        self._root = None
         self._size = 1
-        self.selected = False
-
-    def is_selected(self):
-        return self.selected
 
     def size(self):
         return self._size
 
     def height(self):
-        if self.left is None and self.right is None:
-            return 0
-        elif self.left is None:
-            return 1 + self.right.height()
-        elif self.right is None:
-            return 1 + self.left.height()
+        if not self.is_empty():
+            return self.__height_of(self.get_root())
         else:
-            return 1 + max(self.left.height(), self.right.height())
+            return 0
+
+    def __height_of(self, node):
+        if node.left is None and node.right is None:
+            return 0
+        elif node.left is None:
+            return 1 + self.__height_of(node.right)
+        elif self.right is None:
+            return 1 + self.__height_of(node.left)
+        else:
+            return 1 + max(self.__height_of(node.left),
+                           self.__height_of(node.right))
 
     def add(self, value):
-        self.selected = True
         self._size += 1
-        self.suspend()
-        if value <= self.value:
-            if self.left is not None:
-                self.left.add(value)
-            else:
-                self.left = BinarySearchTree(value, parent=self)
+        if not self.is_empty():
+            self.__add_to(self.get_root(), value)
         else:
-            if self.right is not None:
-                self.right.add(value)
+            self._root = Node(value, None, None)
+
+    def __add_to(self, node, value):
+        node.select()
+        self.suspend()
+        if value <= node.value:
+            if node.left is not None:
+                self.__add_to(node.left, value)
             else:
-                self.right = BinarySearchTree(value, parent=self)
-        self.selected = False
+                node.left = Node(value, None, None)
+        else:
+            if node.right is not None:
+                self.__add_to(node.right, value)
+            else:
+                node.right = Node(value, None, None)
+        node.unselect()
 
     def remove(self, value):
-        self.selected = True
+        if not self.is_empty():
+            self._root = self.__remove_from(self.get_root(), value)
+            self._size -= 1
+
+    def __remove_from(self, node, value):
+        node.select()
         self.suspend()
-        result = None
-        if value == self.value:
-            self.get_root()._size -= 1
-            if self.right is not None:
-                replace_with = self.right.__max()
-                self.remove(replace_with.value)
-                result =  replace_with
+        result = node
+        if value == node.value:
+            if node.right is not None:
+                max_node = self.__max_child_of(node.right)
+                self.__remove_from(node, max_node.value)
+                self.suspend()
+                node.value = max_node.value
             else:
-                result = self.left
-        elif value < self.value:
-            if self.left is not None:
-                self.left = self.left.remove(value)
-                result = self
+                result = node.left
+        elif value < node.value:
+            if node.left is not None:
+                node.left = self.__remove_from(node.left, value)
         else:
-            if self.right is not None:
-                self.right = self.right.remove(value)
-                result = self
-
-        self.selected = False
+            if node.right is not None:
+                node.right = self.__remove_from(node.right, value)
+        node.unselect()
         return result
 
-    def __max(self):
-        self.selected = True
+    def __max_child_of(self, node):
+        node.select()
         self.suspend()
-        result = self
-        if self.right is not None:
-            result = self.right._max()
-        self.selected = False
+        result = node
+        if node.right is not None:
+            result = self.__max_child_of(node.right)
+        node.unselect()
         return result
 
-
-    def get_left(self):
-        return self.left
-
-    def get_right(self):
-        return self.right
+    def get_root(self):
+        return self._root

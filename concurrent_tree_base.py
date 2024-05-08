@@ -3,12 +3,8 @@ import time
 
 class ConcurrentTreeBase:
 
-    def __init__(self, parent=None):
-        self.__parent = parent
-        if parent is not None:
-            self.mutex = parent.mutex
-        else:
-            self.mutex = threading.Lock()
+    def __init__(self):
+        self.mutex = threading.Lock()
 
     def is_selected(self):
         raise NotImplementedError()
@@ -25,16 +21,10 @@ class ConcurrentTreeBase:
     def remove(self, value):
         raise NotImplementedError()
 
+    def is_empty(self):
+        return self.get_root() is None
+
     def get_root(self):
-        if self.__parent is not None:
-            return self.__parent.get_root()
-        else:
-            return self
-
-    def get_left(self):
-        raise NotImplementedError()
-
-    def get_right(self):
         raise NotImplementedError()
 
     def lock(self):
@@ -56,3 +46,20 @@ class ConcurrentTreeBase:
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.unlock()
+
+class Node:
+
+    def __init__(self, value, left, right):
+        self.value = value
+        self.left = left
+        self.right = right
+        self._selected = False
+
+    def is_selected(self):
+        return self._selected
+
+    def select(self):
+        self._selected = True
+
+    def unselect(self):
+        self._selected = False

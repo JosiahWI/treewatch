@@ -6,9 +6,7 @@ import threading
 from binary_tree import BinarySearchTree
 import gui
 
-root_value = int(input("Please enter a value to initialize the tree: "))
-
-tree = BinarySearchTree(root_value)
+tree = BinarySearchTree()
 
 init_complete = False
 
@@ -25,16 +23,16 @@ gui_thread.start()
 while not init_complete:
     pass
 
-while not (cmd := input("[add <i>, remove <i>, quit]: ")).startswith("q"):
+while not (cmd := input("[add <i>, remove <i>, q(uit)]: ")).startswith("q"):
     if cmd.startswith("add"):
-        if re.match("^add \d+$", cmd) is None:
+        if re.match("^add -?\d+$", cmd) is None:
             print("Ill-formed add command.")
             continue
         value = int(cmd.split()[1])
         with tree:
             tree.add(value)
     elif cmd.startswith("remove"):
-        if re.match("^remove \d+$", cmd) is None:
+        if re.match("^remove -?\d+$", cmd) is None:
             print("Ill-formed remove command.")
             continue
         value = int(cmd.split()[1])
