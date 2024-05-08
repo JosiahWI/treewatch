@@ -1,3 +1,5 @@
+# Copyright (c) 2024 Josiah VanderZee
+
 import pygame
 
 import math

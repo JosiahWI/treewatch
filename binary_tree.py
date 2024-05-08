@@ -1,3 +1,5 @@
+# Copyright (c) 2024 Josiah VanderZee
+
 from concurrent_tree_base import ConcurrentTreeBase, Node
 
 class BinarySearchTree(ConcurrentTreeBase):

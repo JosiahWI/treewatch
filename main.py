@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Copyright (c) 2024 Josiah VanderZee
+
 import re
 import threading
 
