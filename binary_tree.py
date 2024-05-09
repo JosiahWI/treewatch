@@ -23,7 +23,7 @@ class BinarySearchTree(ConcurrentTreeBase):
             return 0
         elif node.left is None:
             return 1 + self.__height_of(node.right)
-        elif self.right is None:
+        elif node.right is None:
             return 1 + self.__height_of(node.left)
         else:
             return 1 + max(self.__height_of(node.left),
@@ -110,7 +110,7 @@ class AVLTree(ConcurrentTreeBase):
             return 0
         elif node.left is None:
             return 1 + self.__height_of(node.right)
-        elif self.right is None:
+        elif node.right is None:
             return 1 + self.__height_of(node.left)
         else:
             return 1 + max(self.__height_of(node.left),
