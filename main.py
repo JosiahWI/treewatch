@@ -25,14 +25,14 @@ def console_loop():
 
     while not (cmd := input("[add <i>, remove <i>, q(uit)]: ")).startswith("q"):
         if cmd.startswith("add"):
-            if re.match("^add -?\d+$", cmd) is None:
+            if re.match(r"^add -?\d+$", cmd) is None:
                 print("Ill-formed add command.")
                 continue
             value = int(cmd.split()[1])
             with tree:
                 tree.add(value)
         elif cmd.startswith("remove"):
-            if re.match("^remove -?\d+$", cmd) is None:
+            if re.match(r"^remove -?\d+$", cmd) is None:
                 print("Ill-formed remove command.")
                 continue
             value = int(cmd.split()[1])
