@@ -62,10 +62,10 @@ class BinarySearchTree(ConcurrentTreeBase):
         result = node
         if value == node.value:
             if node.right is not None:
-                max_node = self.__max_child_of(node.right)
-                self.__remove_from(node, max_node.value)
+                min_node = self.__min_child_of(node.right)
+                self.right = self.__remove_from(node, min_node.value)
                 self.suspend()
-                node.value = max_node.value
+                node.value = min_node.value
             else:
                 result = node.left
         elif value < node.value:
@@ -77,12 +77,12 @@ class BinarySearchTree(ConcurrentTreeBase):
         node.unselect()
         return result
 
-    def __max_child_of(self, node):
+    def __min_child_of(self, node):
         node.select()
         self.suspend()
         result = node
-        if node.right is not None:
-            result = self.__max_child_of(node.right)
+        if node.left is not None:
+            result = self.__min_child_of(node.left)
         node.unselect()
         return result
 
@@ -149,10 +149,10 @@ class AVLTree(ConcurrentTreeBase):
         result = node
         if value == node.value:
             if node.right is not None:
-                max_node = self.__max_child_of(node.right)
-                self.__remove_from(node, max_node.value)
+                min_node = self.__min_child_of(node.right)
+                node.right = self.__remove_from(node, min_node.value)
                 self.suspend()
-                node.value = max_node.value
+                node.value = min_node.value
             else:
                 result = node.left
         elif value < node.value:
@@ -164,12 +164,12 @@ class AVLTree(ConcurrentTreeBase):
         node.unselect()
         return result
 
-    def __max_child_of(self, node):
+    def __min_child_of(self, node):
         node.select()
         self.suspend()
         result = node
-        if node.right is not None:
-            result = self.__max_child_of(node.right)
+        if node.left is not None:
+            result = self.__min_child_of(node.left)
         node.unselect()
         return result
 
